@@ -1,8 +1,8 @@
-# Nx React Repository
+# Nx Monorepo
 
 <a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
 
-✨ A repository showcasing key [Nx](https://nx.dev) features for React monorepos ✨
+✨ A production-ready monorepo with React (Vite) frontend and Express API backend ✨
 
 ## 📦 Project Overview
 
@@ -10,21 +10,8 @@ This repository demonstrates a production-ready React monorepo with:
 
 - **2 Applications**
 
-  - `shop` - React e-commerce application with product listings and detail views
-  - `api` - Backend API serving product data
-
-- **7 Libraries**
-
-  - `@org/shop-feature-products` - Product listing feature (React)
-  - `@org/shop-feature-product-detail` - Product detail feature (React)
-  - `@org/shop-data` - Data access layer for shop features
-  - `@org/shop-shared-ui` - Shared UI components
-  - `@org/models` - Shared data models
-  - `@org/api-products` - API product service library
-  - `@org/shared-test-utils` - Shared testing utilities
-
-- **E2E Testing**
-  - `shop-e2e` - Playwright tests for the shop application
+  - `web-app` - React web application built with Vite
+  - `api` - Express backend API
 
 ## 🚀 Quick Start
 
@@ -34,10 +21,10 @@ git clone <your-fork-url>
 cd <your-repository-name>
 
 # Install dependencies
-npx install
+npm install
 
-# Serve the React shop application (this will simultaneously serve the API backend)
-npx nx serve shop
+# Serve the React web application
+npx nx serve web-app
 
 # ...or you can serve the API separately
 npx nx serve api
@@ -51,12 +38,8 @@ npx nx run-many -t test
 # Lint all projects
 npx nx run-many -t lint
 
-# Run e2e tests
-npx nx e2e shop-e2e
-
 # Run tasks in parallel
-
-npx nx run-many -t lint test build e2e --parallel=3
+npx nx run-many -t lint test build --parallel=3
 
 # Visualize the project graph
 npx nx graph
@@ -66,56 +49,49 @@ npx nx graph
 
 This repository showcases several powerful Nx features:
 
-### 1. 🔒 Module Boundaries
+### 1. ⚡ Fast Development with Vite
 
-Enforces architectural constraints using tags. Each project has specific dependencies it can use:
-
-- `scope:shared` - Can be used by all projects
-- `scope:shop` - Shop-specific libraries
-- `scope:api` - API-specific libraries
-- `type:feature` - Feature libraries
-- `type:data` - Data access libraries
-- `type:ui` - UI component libraries
-
-**Try it out:**
+The web application uses Vite for lightning-fast development and hot module replacement:
 
 ```bash
-# See the current project graph and boundaries
-npx nx graph
+# Start the development server
+npx nx serve web-app
 
-# View a specific project's details
-npx nx show project shop --web
+# Build for production
+npx nx build web-app
 ```
 
-[Learn more about module boundaries →](https://nx.dev/features/enforce-module-boundaries)
+[Learn more about Vite with React →](https://nx.dev/recipes/vite)
 
-### 2. 🎭 Playwright E2E Testing
+### 2. 🧪 Testing with Vitest and Jest
 
-End-to-end testing with Playwright is pre-configured:
-
-```bash
-# Run e2e tests
-npx nx e2e shop-e2e
-
-# Run e2e tests in CI mode
-npx nx e2e-ci shop-e2e
-```
-
-[Learn more about E2E testing →](https://nx.dev/technologies/test-tools/playwright/introduction#e2e-testing)
-
-### 3. ⚡ Vitest for Unit Testing
-
-Fast unit testing with Vitest for React libraries:
+- **Vitest** for React web application testing
+- **Jest** for Express API testing
 
 ```bash
-# Test a specific library
-npx nx test shop-data
+# Test the web application
+npx nx test web-app
+
+# Test the API
+npx nx test api
 
 # Test all projects
 npx nx run-many -t test
 ```
 
 [Learn more about Vite testing →](https://nx.dev/recipes/vite)
+
+### 3. 🚀 Express API with TypeScript
+
+The API is built with Express and TypeScript, using esbuild for fast builds:
+
+```bash
+# Start the API server
+npx nx serve api
+
+# Build the API
+npx nx build api
+```
 
 ### 4. 🔧 Self-Healing CI
 
@@ -138,37 +114,13 @@ This feature helps maintain a healthy CI pipeline by automatically detecting and
 ## 📁 Project Structure
 
 ```
-├── apps/
-│   ├── shop/           [scope:shop]    - React e-commerce app
-│   ├── shop-e2e/                       - E2E tests for shop
-│   └── api/            [scope:api]     - Backend API
-├── libs/
-│   ├── shop/
-│   │   ├── feature-products/        [scope:shop,type:feature] - Product listing
-│   │   ├── feature-product-detail/  [scope:shop,type:feature] - Product details
-│   │   ├── data/                    [scope:shop,type:data]    - Data access
-│   │   └── shared-ui/               [scope:shop,type:ui]      - UI components
-│   ├── api/
-│   │   └── products/    [scope:api]    - Product service
-│   └── shared/
-│       ├── models/      [scope:shared,type:data] - Shared models
-│       └── test-utils/  [scope:shared]           - Testing utilities
+├── packages/
+│   ├── web-app/        - React web application (Vite)
+│   └── api/            - Express backend API
 ├── nx.json             - Nx configuration
 ├── tsconfig.json       - TypeScript configuration
-└── eslint.config.mjs   - ESLint with module boundary rules
+└── eslint.config.mjs   - ESLint configuration
 ```
-
-## 🏷️ Understanding Tags
-
-This repository uses tags to enforce module boundaries:
-
-| Project                 | Tags                         | Can Import From              |
-| ----------------------- | ---------------------------- | ---------------------------- |
-| `shop`                  | `scope:shop`                 | `scope:shop`, `scope:shared` |
-| `api`                   | `scope:api`                  | `scope:api`, `scope:shared`  |
-| `shop-feature-products` | `scope:shop`, `type:feature` | `scope:shop`, `scope:shared` |
-| `shop-data`             | `scope:shop`, `type:data`    | `scope:shared`               |
-| `models`                | `scope:shared`, `type:data`  | Nothing (base library)       |
 
 ## 📚 Useful Commands
 
@@ -176,18 +128,27 @@ This repository uses tags to enforce module boundaries:
 # Project exploration
 npx nx graph                                    # Interactive dependency graph
 npx nx list                                     # List installed plugins
-npx nx show project shop --web                 # View project details
+npx nx show project web-app --web              # View web-app project details
+npx nx show project api --web                  # View api project details
 
 # Development
-npx nx serve shop                              # Serve React app
-npx nx serve api                               # Serve backend API
-npx nx build shop                              # Build React app
-npx nx test shop-data                          # Test a specific library
-npx nx lint shop-feature-products              # Lint a specific library
+npx nx serve web-app                           # Serve React web app (port 4200)
+npx nx serve api                               # Serve Express API (port 3000)
+npx nx build web-app                           # Build React app
+npx nx build api                               # Build Express API
+
+# Testing
+npx nx test web-app                            # Test React app
+npx nx test api                                # Test Express API
+npx nx run-many -t test --parallel=3          # Test all projects in parallel
+
+# Linting
+npx nx lint web-app                            # Lint React app
+npx nx lint api                                # Lint Express API
+npx nx run-many -t lint                        # Lint all projects
 
 # Running multiple tasks
 npx nx run-many -t build                       # Build all projects
-npx nx run-many -t test --parallel=3          # Test in parallel
 npx nx run-many -t lint test build            # Run multiple targets
 
 # Affected commands (great for CI)
@@ -200,25 +161,19 @@ npx nx affected -t test                        # Test only affected projects
 ### Generate a new React application:
 
 ```bash
-npx nx g @nx/react:app my-app
+npx nx g @nx/react:app my-app --directory=packages/my-app --bundler=vite
 ```
 
-### Generate a new React library:
+### Generate a new Express API:
 
 ```bash
-npx nx g @nx/react:lib my-lib
+npx nx g @nx/node:application my-api --directory=packages/my-api --framework=express
 ```
 
 ### Generate a new React component:
 
 ```bash
-npx nx g @nx/react:component my-component --project=my-lib
-```
-
-### Generate a new API library:
-
-```bash
-npx nx g @nx/node:lib my-api-lib
+npx nx g @nx/react:component my-component --project=web-app
 ```
 
 You can use `npx nx list` to see all available plugins and `npx nx list <plugin-name>` to see all generators for a specific plugin.
